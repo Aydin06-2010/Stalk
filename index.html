@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Static Google Map Example</title>
+    <style>
+        /* Styling the image */
+        #mapImage {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Get Your Location's Static Google Map</h2>
+
+    <!-- Button to trigger location fetching -->
+    <button onclick="getLocation()">Get Location and Show Map</button>
+
+    <!-- Placeholder for the static map -->
+    <img id="mapImage" src="" alt="Map will appear here" />
+
+    <script>
+        // Function to get the user's location using the Geolocation API
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    var latitude = position.coords.latitude;
+                    var longitude = position.coords.longitude;
+
+                    console.log("Latitude: " + latitude);
+                    console.log("Longitude: " + longitude);
+
+                    // Call function to display the static map
+                    displayMap(latitude, longitude);
+                }, function(error) {
+                    alert("Error getting location: " + error.message);
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        // Function to display the static map using the Google Maps Static API
+        function displayMap(latitude, longitude) {
+            // Your Google Maps API key goes here
+            var apiKey = "YOUR_API_KEY";
+
+            // Construct the URL to the Static Map API
+            var mapUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=15&size=600x400&maptype=roadmap&markers=${latitude},${longitude}&key=${apiKey}`;
+
+            // Set the image source to the Static Map URL
+            document.getElementById('mapImage').src = mapUrl;
+        }
+    </script>
+
+</body>
+</html>
