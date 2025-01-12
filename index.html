@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Here Maps Example</title>
+    <title>Static Map from OpenStreetMap</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
         #map { height: 400px; width: 100%; }
     </style>
 </head>
 <body>
 
-    <h2>Get Your Location's Map (Here API)</h2>
+    <h2>Get Your Location's Map (OpenStreetMap)</h2>
     <button onclick="getLocation()">Get Location and Show Map</button>
     <div id="map"></div>
 
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"></script>
-    <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
         function getLocation() {
             if (navigator.geolocation) {
@@ -26,24 +26,18 @@
                     console.log("Latitude: " + latitude);
                     console.log("Longitude: " + longitude);
 
-                    // Initialize the Here map
-                    var platform = new H.service.Platform({
-                        apikey: "YOUR_HERE_API_KEY" // Replace with your HERE API key
-                    });
+                    // Create map centered on the location
+                    var map = L.map('map').setView([latitude, longitude], 15);
 
-                    var maptypes = platform.createDefaultLayers();
-                    var map = new H.Map(
-                        document.getElementById('map'),
-                        maptypes.vector.normal.map,
-                        {
-                            center: {lat: latitude, lng: longitude},
-                            zoom: 15
-                        }
-                    );
+                    // Add OSM tile layer
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    }).addTo(map);
 
-                    // Add a marker
-                    var marker = new H.map.Marker({lat: latitude, lng: longitude});
-                    map.addObject(marker);
+                    // Add marker for the location
+                    L.marker([latitude, longitude]).addTo(map)
+                        .bindPopup("You are here!")
+                        .openPopup();
                 }, function(error) {
                     alert("Error getting location: " + error.message);
                 });
